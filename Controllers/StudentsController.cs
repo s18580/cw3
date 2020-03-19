@@ -10,11 +10,24 @@ namespace cw3.Controllers
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-       [HttpGet]
+        [HttpGet]
         public string GetStudents()
         {
             return "Kowalski, Malewski, Andrzejewski";
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetStudent(int id)
+        {
+            if (id==1)
+            {
+                return Ok("Kowalski");
+            }else if (id==2)
+            {
+                return Ok("Malewski");
+            }
+
+            return NotFound("Nie znaleziono studenta");
+        }
     }
 }
