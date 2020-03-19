@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cw3.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cw3.Controllers
@@ -11,9 +12,9 @@ namespace cw3.Controllers
     public class StudentsController : ControllerBase
     {
         [HttpGet]
-        public string GetStudents()
+        public string GetStudents(string orderBy)
         {
-            return "Kowalski, Malewski, Andrzejewski";
+            return $"Kowalski, Malewski, Andrzejewski sortowanie={orderBy}";
         }
 
         [HttpGet("{id}")]
@@ -28,6 +29,15 @@ namespace cw3.Controllers
             }
 
             return NotFound("Nie znaleziono studenta");
+        }
+
+        [HttpPost]
+        public IActionResult CreateStudent(Student student)
+        {
+            // add to database
+            // generating index number
+            student.IndexNumber = $"s{new Random().Next(1, 20000)}";
+            return Ok(student);
         }
     }
 }
