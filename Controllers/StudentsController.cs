@@ -69,8 +69,9 @@ namespace cw3.Controllers
                 {
 
                     com.Connection = client;
-                com.CommandText = "SELECT * FROM Student WHERE IndexNumber='s" + id + "'";
-                
+                com.CommandText = "SELECT * FROM Student WHERE IndexNumber=@id";
+                com.Parameters.AddWithValue("id", id);
+
                 com.Open();
                 var dr = com.ExecuteReader();
                 while(dr.Read)
