@@ -18,6 +18,41 @@ namespace cw3.Controllers
         {
             _dbService = dbService;
         }
+        
+
+        [HttpGet]
+        public IActionResult GetStudents()
+        {
+            string conString = "Data Source=db-mssql;Initial Catalog=s18580;Integrated Security=True";
+            using (var client = new SqlConnection(conString))
+            {
+                using (var com = new SqlCommand())
+                {
+                    List<Student> list = new List<Student>();
+                com.Connection = client;
+                com.CommandText = "SELECT * FROM Student";
+                
+                com.Open();
+                var dr = com.ExecuteReader();
+                while(dr.Read)
+                {
+                        var st = new Student();
+                        st.FirstName = dr["FirstName"].ToString();
+                        st.LastName = dr["LastName"].ToString();
+                        st.BirthDate = dr["BirthDate"].ToString();
+                        st.Enrollment = dr["IdEnrollment"].ToString();
+                        st.IndexNumber = dr["IndexNumber"].ToString();
+                        list.Add(st);
+                }
+
+                return list;
+                }
+            
+            
+            
+            }
+
+        }
 
         [HttpGet]
         public IActionResult GetStudents(string orderBy)
