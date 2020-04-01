@@ -18,7 +18,6 @@ namespace cw3.Controllers
         {
             _dbService = dbService;
         }
-        
 
         [HttpGet]
         public IActionResult GetStudents()
@@ -63,15 +62,31 @@ namespace cw3.Controllers
         [HttpGet("{id}")]
         public IActionResult GetStudent(int id)
         {
-            if (id==1)
+            string conString = "Data Source=db-mssql;Initial Catalog=s18580;Integrated Security=True";
+             using (var client = new SqlConnection(conString))
             {
-                return Ok("Kowalski");
-            }else if (id==2)
-            {
-                return Ok("Malewski");
-            }
+                using (var com = new SqlCommand())
+                {
 
-            return NotFound("Nie znaleziono studenta");
+                    com.Connection = client;
+                com.CommandText = "SELECT * FROM Student WHERE IndexNumber='s" + id + "'";
+                
+                com.Open();
+                var dr = com.ExecuteReader();
+                while(dr.Read)
+                {
+                        var st = new Student();
+                        st.FirstName = dr["FirstName"].ToString();
+                        st.LastName = dr["LastName"].ToString();
+                        st.BirthDate = dr["BirthDate"].ToString();
+                        st.Enrollment = dr["IdEnrollment"].ToString();
+                        st.IndexNumber = dr["IndexNumber"].ToString();
+                        return st;
+                }
+
+                }
+
+             }
         }
 
         [HttpPost]
