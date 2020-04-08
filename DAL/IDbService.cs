@@ -10,5 +10,7 @@ namespace cw3.DAL
     {
 
         public IEnumerable<Student> GetStudents();
+
+        public bool CheckIndex(string index);
     }
 }

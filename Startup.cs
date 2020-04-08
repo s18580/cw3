@@ -30,12 +30,36 @@ namespace cw3
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbService dbService)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<LoggingMiddleware>();
+
+            app.Use(async (context, next) =>
+            {        
+                if(!context.Request.Headers.ContainsKey("Index"))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Inautorised;
+                    await context.Response.WriteAsync("Nie podano indeksu w nag³ówku");
+                    return;
+                }
+
+                var index = context.Request.Headers["Index"].ToString();
+
+                if(!dbService.CheckIndex(index))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Inautorised;
+                    await context.Response.WriteAsync("Podany numer indexu nie istnieje w bazie");
+                    return;
+                }
+
+                await next();
+            });
+
 
             app.UseRouting();
 
